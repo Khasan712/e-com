@@ -1,0 +1,92 @@
+services:
+  web:
+    build: ./
+    container_name: "milli_web"
+    restart: always
+    command: bash entrypoint.sh
+    volumes:
+      - .:/app
+      - ./static-media/staticfiles:/static-media/staticfiles
+      - ./static-media/static:/static-media/static
+      - ./static-media/media:/static-media/media
+    ports:
+      - 8050:8050
+    env_file:
+      - ./.env
+    depends_on:
+      - milli_db
+
+  milli_db:
+    build: milli_db/
+    container_name: "milli_db"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    ports:
+      - 5433:5432
+
+  minio:
+    image: minio/minio
+    container_name: "milli_minio"
+    ports:
+      - 9000:9000
+      - 9090:9090
+    volumes:
+      - minio_storage:/data
+    environment:
+      MINIO_ROOT_USER: admin:admin
+      MINIO_ROOT_PASSWORD: admin:admin
+    command: server --console-address ":9090" /data
+
+  fast:
+    build: fast/
+    container_name: "fast_web"
+    restart: always
+    command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8051 --reload"
+    volumes:
+      - ./fast:/fast
+    ports:
+      - 8051:8051
+
+  redis:
+    container_name: milli_redis
+    image: redis:alpine
+    ports:
+      - 6381:6379
+    volumes:
+      - milli_redis_data:/data
+    depends_on:
+      - web
+
+  celery-worker:
+    container_name: milli_celery_worker
+    restart: always
+    build:
+      context: .
+    command: celery -A config worker -l info
+    depends_on:
+      - web
+      - redis
+      - milli_db
+    volumes:
+      - .:/app
+
+  celery-beat:
+    container_name: milli_erp_celery_beat
+    restart: always
+    build:
+      context: .
+    command: celery -A config beat -l info
+    depends_on:
+      - web
+      - redis
+      - celery-worker
+      - milli_db
+    volumes:
+      - .:/app
+
+volumes:
+  postgres_data:
+  minio_storage:
+  milli_redis_data:

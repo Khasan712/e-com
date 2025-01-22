@@ -1,0 +1,13 @@
+.idea/
+Pipfile
+Pipfile.lock
+migrations/
+.env
+env/
+venv/
+api/v1/product/migrations/
+api/v1/user/migrations/
+api/v1/proposal/migrations/
+api/v1/warehouse/migrations/
+api/v1/advertising/migrations/
+api/v1/utilis/migrations/
