@@ -6,9 +6,6 @@ services:
     command: bash entrypoint.sh
     volumes:
       - .:/app
-      - ./static-media/staticfiles:/static-media/staticfiles
-      - ./static-media/static:/static-media/static
-      - ./static-media/media:/static-media/media
     ports:
       - 8050:8050
     env_file:

@@ -173,20 +173,20 @@ cython_debug/
 .pypirc
 
 # CUSTOM FOLDERS
-migrations/*
-static-media/
+#migrations/*
+#static-media/
 Pipfile
 Pipfile.lock
 *.json
-static/
-media/
-staticfiles/
-api/v1/product/migrations/*
-api/v1/user/migrations/*
-api/v1/proposal/migrations/*
-api/v1/warehouse/migrations/*
-api/v1/advertising/migrations/*
-api/v1/utilis/migrations/*
+#static/
+#media/
+#staticfiles/
+#api/v1/product/migrations/*
+#api/v1/user/migrations/*
+#api/v1/proposal/migrations/*
+#api/v1/warehouse/migrations/*
+#api/v1/advertising/migrations/*
+#api/v1/utilis/migrations/*
 *.sql
 local-docker-compose.yml
 .env.dev
